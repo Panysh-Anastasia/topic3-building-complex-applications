@@ -1,9 +1,13 @@
 package com.topic3.android.reddit.appdrawer
 
+import android.graphics.drawable.Icon
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -22,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.topic3.android.reddit.R
 
 import com.topic3.android.reddit.theme.RedditThemeSettings
@@ -81,9 +86,51 @@ private fun AppDrawerHeader() {
   )
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun ProfileInfo() {
-  //TODO add your code here
+fun ProfileInfo(modifier: Modifier = Modifier, textResourceId: Int, amountResourceId: Int, iconAsset: ImageVector) {
+  val colors = MaterialTheme.colors
+
+  ConstraintLayout(modifier = modifier) {
+    val (iconRef, amountRef, titleRef) = createRefs()
+    val itemModifier = Modifier
+
+    Icon(
+      imageVector = iconAsset,
+      tint = Color.Blue,
+      modifier = itemModifier
+        .constrainAs(iconRef) {
+          centerVerticallyTo(parent)
+          start.linkTo(parent.start)
+        }
+        .padding(start = 16.dp),
+      contentDescription = stringResource(id = textResourceId)
+    )
+    Text(
+      text = stringResource(id = amountResourceId),
+      color = colors.primaryVariant,
+      fontSize = 10.sp,
+      modifier = itemModifier
+        .padding(start = 8.dp)
+        .constrainAs(amountRef) {
+          top.linkTo(iconRef.top)
+          start.linkTo(iconRef.end)
+          bottom.linkTo(titleRef.top)
+        }
+    )
+    Text(
+      text = stringResource(id = textResourceId),
+      color = Color.Gray,
+      fontSize = 10.sp,
+      modifier = itemModifier
+        .padding(start = 8.dp)
+        .constrainAs(titleRef) {
+          top.linkTo(amountRef.bottom)
+          start.linkTo(iconRef.end)
+          bottom.linkTo(iconRef.bottom)
+        }
+    )
+  }
 }
 
 @Composable
